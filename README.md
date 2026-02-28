@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Travel Planner
+
+A personal travel planning app for managing trips and day-by-day itineraries, with live flight search powered by the Amadeus API.
+
+> Bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Features
+
+- **Trip dashboard** — create and delete trips with a name, destination, and date range
+- **Day-by-day itinerary** — activities are organised per day across the full trip duration
+- **Manual activities** — add any activity with a title, time, and notes
+- **Flight search** — search live flights via Amadeus and add them directly to a day; saved flights render as rich cards showing flight number, route, departure/arrival times, cabin class, stops, duration, and price
+- **Persistent storage** — SQLite database via better-sqlite3
+
+## Stack
+
+- [Next.js 16](https://nextjs.org) (App Router, TypeScript)
+- [Tailwind CSS v4](https://tailwindcss.com)
+- [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) — local SQLite database
+- [Amadeus Self-Service APIs](https://developers.amadeus.com/) — flight offers search
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
+```
+
+### 2. Configure environment variables
+
+Copy `env.example` to `.env.local` and fill in your Amadeus credentials:
+
+```bash
+cp env.example .env.local
+```
+
+Sign up for free at [developers.amadeus.com](https://developers.amadeus.com/) and create an app under the **test** environment to get your `AMADEUS_CLIENT_ID` and `AMADEUS_CLIENT_SECRET`.
+
+### 3. Run the dev server
+
+```bash
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/
+    page.tsx                        # Trip dashboard
+    trips/[id]/page.tsx             # Itinerary view
+    api/
+      trips/                        # CRUD for trips and activities
+      flights/search/               # Amadeus flight search proxy
+  components/
+    ui/                             # Button, Card, Modal, Badge
+    trips/                          # TripCard, TripForm, TripGrid
+    itinerary/                      # DayTabs, DayColumn, ActivityItem,
+                                    # ActivityForm, FlightSearch
+  lib/
+    db.ts                           # SQLite singleton
+    amadeus.ts                      # Amadeus OAuth2 client + searchFlights()
+  types/
+    index.ts                        # Trip, Activity, DayPlan, FlightMetadata
+data/
+  travel.db                         # SQLite database (git-ignored)
+```
