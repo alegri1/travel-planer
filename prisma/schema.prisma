@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Trip {
+  id          Int        @id @default(autoincrement())
+  name        String
+  destination String
+  start_date  String
+  end_date    String
+  created_at  DateTime   @default(now()) @db.Timestamptz()
+  activities  Activity[]
+
+  @@map("trips")
+}
+
+model Activity {
+  id         Int      @id @default(autoincrement())
+  trip_id    Int
+  day_index  Int
+  position   Int
+  title      String
+  time       String?
+  notes      String?
+  metadata   String?
+  created_at DateTime @default(now()) @db.Timestamptz()
+  trip       Trip     @relation(fields: [trip_id], references: [id], onDelete: Cascade)
+
+  @@map("activities")
+}

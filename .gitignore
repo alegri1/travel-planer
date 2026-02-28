@@ -45,3 +45,6 @@ next-env.d.ts
 
 # sqlite database
 /data/travel.db
+
+.vercel
+.env*.local

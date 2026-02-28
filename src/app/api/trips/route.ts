@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { sql, ensureDb } from "@/lib/db";
-import type { Trip } from "@/types";
+import { prisma } from "@/lib/db";
 
 export async function GET() {
-  await ensureDb();
-  const { rows } = await sql<Trip>`SELECT * FROM trips ORDER BY start_date ASC`;
-  return NextResponse.json(rows);
+  const trips = await prisma.trip.findMany({
+    orderBy: { start_date: "asc" },
+  });
+  return NextResponse.json(trips);
 }
 
 export async function POST(request: Request) {
@@ -16,11 +16,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  await ensureDb();
-  const { rows } = await sql<Trip>`
-    INSERT INTO trips (name, destination, start_date, end_date)
-    VALUES (${name}, ${destination}, ${start_date}, ${end_date})
-    RETURNING *
-  `;
-  return NextResponse.json(rows[0], { status: 201 });
+  const trip = await prisma.trip.create({
+    data: { name, destination, start_date, end_date },
+  });
+  return NextResponse.json(trip, { status: 201 });
 }

@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server";
-import { sql, ensureDb } from "@/lib/db";
-import type { Activity } from "@/types";
+import { prisma } from "@/lib/db";
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_req: Request, { params }: Params) {
   const { id } = await params;
-  await ensureDb();
-  const { rows } = await sql<Activity>`
-    SELECT * FROM activities WHERE trip_id = ${id} ORDER BY day_index ASC, position ASC
-  `;
-  return NextResponse.json(rows);
+  const activities = await prisma.activity.findMany({
+    where: { trip_id: Number(id) },
+    orderBy: [{ day_index: "asc" }, { position: "asc" }],
+  });
+  return NextResponse.json(activities);
 }
 
 export async function POST(request: Request, { params }: Params) {
@@ -22,19 +21,25 @@ export async function POST(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  await ensureDb();
-  const { rows: tripRows } = await sql`SELECT id FROM trips WHERE id = ${id}`;
-  if (!tripRows[0]) return NextResponse.json({ error: "Trip not found" }, { status: 404 });
+  const trip = await prisma.trip.findUnique({ where: { id: Number(id) } });
+  if (!trip) return NextResponse.json({ error: "Trip not found" }, { status: 404 });
 
-  const { rows: maxRows } = await sql<{ maxpos: number | null }>`
-    SELECT MAX(position) as maxpos FROM activities WHERE trip_id = ${id} AND day_index = ${day_index}
-  `;
-  const position = (maxRows[0]?.maxpos ?? -1) + 1;
+  const maxResult = await prisma.activity.aggregate({
+    where: { trip_id: Number(id), day_index },
+    _max: { position: true },
+  });
+  const position = (maxResult._max.position ?? -1) + 1;
 
-  const { rows } = await sql<Activity>`
-    INSERT INTO activities (trip_id, day_index, position, title, time, notes, metadata)
-    VALUES (${id}, ${day_index}, ${position}, ${title}, ${time ?? null}, ${notes ?? null}, ${metadata ?? null})
-    RETURNING *
-  `;
-  return NextResponse.json(rows[0], { status: 201 });
+  const activity = await prisma.activity.create({
+    data: {
+      trip_id: Number(id),
+      day_index,
+      position,
+      title,
+      time: time ?? null,
+      notes: notes ?? null,
+      metadata: metadata ?? null,
+    },
+  });
+  return NextResponse.json(activity, { status: 201 });
 }
