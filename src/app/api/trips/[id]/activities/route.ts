@@ -18,7 +18,7 @@ export async function GET(_req: Request, { params }: Params) {
 export async function POST(request: Request, { params }: Params) {
   const { id } = await params;
   const body = await request.json();
-  const { day_index, title, time, notes } = body;
+  const { day_index, title, time, notes, metadata } = body;
 
   if (day_index === undefined || !title) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -37,9 +37,9 @@ export async function POST(request: Request, { params }: Params) {
 
   const result = db
     .prepare(
-      "INSERT INTO activities (trip_id, day_index, position, title, time, notes) VALUES (?, ?, ?, ?, ?, ?)"
+      "INSERT INTO activities (trip_id, day_index, position, title, time, notes, metadata) VALUES (?, ?, ?, ?, ?, ?, ?)"
     )
-    .run(id, day_index, position, title, time ?? null, notes ?? null);
+    .run(id, day_index, position, title, time ?? null, notes ?? null, metadata ?? null);
 
   const activity = db
     .prepare("SELECT * FROM activities WHERE id = ?")

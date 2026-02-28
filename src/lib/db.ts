@@ -27,9 +27,17 @@ export function getDb(): Database.Database {
         title      TEXT NOT NULL,
         time       TEXT,
         notes      TEXT,
+        metadata   TEXT,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       );
     `);
+
+    // Migrate: add metadata column to existing databases
+    try {
+      db.exec("ALTER TABLE activities ADD COLUMN metadata TEXT");
+    } catch {
+      // Column already exists — safe to ignore
+    }
   }
   return db;
 }

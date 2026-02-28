@@ -15,7 +15,23 @@ export interface Activity {
   title: string;
   time: string | null;
   notes: string | null;
+  metadata: string | null;
   created_at: string;
+}
+
+export interface FlightMetadata {
+  type: "flight";
+  airline: string;
+  flightNumber: string;
+  origin: string;
+  destination: string;
+  departure: string;
+  arrival: string;
+  duration: string;
+  price: string;
+  currency: string;
+  cabin: string;
+  stops: number;
 }
 
 export interface DayPlan {
