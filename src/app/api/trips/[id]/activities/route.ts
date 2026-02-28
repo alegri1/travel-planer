@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { sql, ensureDb } from "@/lib/db";
 import type { Activity } from "@/types";
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_req: Request, { params }: Params) {
   const { id } = await params;
-  const db = getDb();
-  const activities = db
-    .prepare(
-      "SELECT * FROM activities WHERE trip_id = ? ORDER BY day_index ASC, position ASC"
-    )
-    .all(id) as Activity[];
-  return NextResponse.json(activities);
+  await ensureDb();
+  const { rows } = await sql<Activity>`
+    SELECT * FROM activities WHERE trip_id = ${id} ORDER BY day_index ASC, position ASC
+  `;
+  return NextResponse.json(rows);
 }
 
 export async function POST(request: Request, { params }: Params) {
@@ -24,25 +22,19 @@ export async function POST(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  const db = getDb();
-  const trip = db.prepare("SELECT * FROM trips WHERE id = ?").get(id);
-  if (!trip) return NextResponse.json({ error: "Trip not found" }, { status: 404 });
+  await ensureDb();
+  const { rows: tripRows } = await sql`SELECT id FROM trips WHERE id = ${id}`;
+  if (!tripRows[0]) return NextResponse.json({ error: "Trip not found" }, { status: 404 });
 
-  const maxRow = db
-    .prepare(
-      "SELECT MAX(position) as maxPos FROM activities WHERE trip_id = ? AND day_index = ?"
-    )
-    .get(id, day_index) as { maxPos: number | null };
-  const position = (maxRow.maxPos ?? -1) + 1;
+  const { rows: maxRows } = await sql<{ maxpos: number | null }>`
+    SELECT MAX(position) as maxpos FROM activities WHERE trip_id = ${id} AND day_index = ${day_index}
+  `;
+  const position = (maxRows[0]?.maxpos ?? -1) + 1;
 
-  const result = db
-    .prepare(
-      "INSERT INTO activities (trip_id, day_index, position, title, time, notes, metadata) VALUES (?, ?, ?, ?, ?, ?, ?)"
-    )
-    .run(id, day_index, position, title, time ?? null, notes ?? null, metadata ?? null);
-
-  const activity = db
-    .prepare("SELECT * FROM activities WHERE id = ?")
-    .get(result.lastInsertRowid) as Activity;
-  return NextResponse.json(activity, { status: 201 });
+  const { rows } = await sql<Activity>`
+    INSERT INTO activities (trip_id, day_index, position, title, time, notes, metadata)
+    VALUES (${id}, ${day_index}, ${position}, ${title}, ${time ?? null}, ${notes ?? null}, ${metadata ?? null})
+    RETURNING *
+  `;
+  return NextResponse.json(rows[0], { status: 201 });
 }

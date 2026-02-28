@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { sql, ensureDb } from "@/lib/db";
 import type { Trip } from "@/types";
 
 export async function GET() {
-  const db = getDb();
-  const trips = db.prepare("SELECT * FROM trips ORDER BY start_date ASC").all() as Trip[];
-  return NextResponse.json(trips);
+  await ensureDb();
+  const { rows } = await sql<Trip>`SELECT * FROM trips ORDER BY start_date ASC`;
+  return NextResponse.json(rows);
 }
 
 export async function POST(request: Request) {
@@ -16,11 +16,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  const db = getDb();
-  const result = db
-    .prepare("INSERT INTO trips (name, destination, start_date, end_date) VALUES (?, ?, ?, ?)")
-    .run(name, destination, start_date, end_date);
-
-  const trip = db.prepare("SELECT * FROM trips WHERE id = ?").get(result.lastInsertRowid) as Trip;
-  return NextResponse.json(trip, { status: 201 });
+  await ensureDb();
+  const { rows } = await sql<Trip>`
+    INSERT INTO trips (name, destination, start_date, end_date)
+    VALUES (${name}, ${destination}, ${start_date}, ${end_date})
+    RETURNING *
+  `;
+  return NextResponse.json(rows[0], { status: 201 });
 }
