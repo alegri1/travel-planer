@@ -34,7 +34,18 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-bold text-zinc-900">My Trips</h1>
             <p className="text-sm text-zinc-500 mt-0.5">Plan and manage your travel itineraries</p>
           </div>
-          <Button onClick={() => setOpen(true)}>+ New Trip</Button>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => setOpen(true)}>+ New Trip</Button>
+            <Button
+              variant="ghost"
+              onClick={async () => {
+                await fetch("/api/auth/logout", { method: "POST" });
+                window.location.href = "/login";
+              }}
+            >
+              Log out
+            </Button>
+          </div>
         </div>
 
         <TripGrid trips={trips} onDelete={loadTrips} />
