@@ -3,8 +3,9 @@ import { createToken, COOKIE_NAME } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   const { password } = await request.json();
+  const expected = process.env.LOGIN_PASSWORD;
 
-  if (!password || password !== process.env.LOGIN_PASSWORD) {
+  if (!password || password !== expected) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
