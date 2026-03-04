@@ -1,7 +1,4 @@
-"use client";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 
 interface TripFormProps {
@@ -9,7 +6,6 @@ interface TripFormProps {
 }
 
 export default function TripForm({ onClose }: TripFormProps) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -44,7 +40,6 @@ export default function TripForm({ onClose }: TripFormProps) {
       return;
     }
 
-    router.refresh();
     onClose();
   }
 

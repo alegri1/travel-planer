@@ -2,38 +2,40 @@
   "name": "travel-planer",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "prisma generate && next build",
+    "dev": "react-router dev",
+    "build": "prisma generate && react-router build",
     "postinstall": "prisma generate",
-    "start": "next start",
+    "start": "react-router-serve ./build/server/index.js",
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "^5.1.1",
+    "@fontsource-variable/geist-mono": "^5.1.1",
     "@prisma/adapter-ppg": "^7.4.2",
     "@prisma/client": "^7.4.2",
-    "next": "16.1.6",
+    "@react-router/node": "^7.6.1",
+    "@vercel/react-router": "^1.0.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-router": "^7.6.1",
+    "isbot": "^5"
   },
   "devDependencies": {
+    "@react-router/dev": "^7.6.1",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/vite": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.3.1",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
     "prisma": "^7.4.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
-  },
-  "ignoreScripts": [
-    "sharp",
-    "unrs-resolver"
-  ],
-  "trustedDependencies": [
-    "sharp",
-    "unrs-resolver"
-  ]
+    "typescript": "^5",
+    "typescript-eslint": "^8.56.1",
+    "vite": "^6.3.5",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
 }

@@ -1,6 +1,4 @@
-"use client";
-
-import Link from "next/link";
+import { Link } from "react-router";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
@@ -30,7 +28,7 @@ export default function TripCard({ trip, onDelete }: TripCardProps) {
     <Card className="flex flex-col gap-3 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between gap-2">
         <Link
-          href={`/trips/${trip.id}`}
+          to={`/trips/${trip.id}`}
           className="text-base font-semibold text-zinc-900 hover:text-zinc-600 transition-colors leading-snug"
         >
           {trip.name}

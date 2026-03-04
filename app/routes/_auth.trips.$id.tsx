@@ -1,8 +1,5 @@
-"use client";
-
 import { useState, useEffect, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
+import { useParams, useNavigate, Link } from "react-router";
 import DayTabs from "@/components/itinerary/DayTabs";
 import DayColumn from "@/components/itinerary/DayColumn";
 import Button from "@/components/ui/Button";
@@ -13,7 +10,7 @@ function buildDayPlans(trip: Trip, activities: Activity[]): DayPlan[] {
   const end = new Date(trip.end_date + "T00:00:00");
   const days: DayPlan[] = [];
 
-  let current = new Date(start);
+  const current = new Date(start);
   let dayIndex = 0;
 
   while (current <= end) {
@@ -33,8 +30,8 @@ function buildDayPlans(trip: Trip, activities: Activity[]): DayPlan[] {
 }
 
 export default function ItineraryPage() {
-  const { id } = useParams<{ id: string }>();
-  const router = useRouter();
+  const { id } = useParams<"id">();
+  const navigate = useNavigate();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activeDay, setActiveDay] = useState(0);
@@ -65,7 +62,7 @@ export default function ItineraryPage() {
       <main className="bg-zinc-50 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-zinc-500 mb-4">Trip not found.</p>
-          <Link href="/" className="text-sm text-zinc-900 underline">
+          <Link to="/" className="text-sm text-zinc-900 underline">
             Back to dashboard
           </Link>
         </div>
@@ -88,7 +85,7 @@ export default function ItineraryPage() {
     <main className="bg-zinc-50 min-h-screen">
       <div className="max-w-5xl mx-auto px-6 py-10">
         <div className="mb-6">
-          <Button variant="ghost" className="mb-4 px-0 text-xs" onClick={() => router.push("/")}>
+          <Button variant="ghost" className="mb-4 px-0 text-xs" onClick={() => navigate("/")}>
             ← Back to trips
           </Button>
           <h1 className="text-2xl font-bold text-zinc-900">{trip.name}</h1>

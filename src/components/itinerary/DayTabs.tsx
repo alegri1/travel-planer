@@ -1,5 +1,3 @@
-"use client";
-
 import type { DayPlan } from "@/types";
 
 interface DayTabsProps {

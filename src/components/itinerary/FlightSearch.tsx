@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
@@ -105,7 +103,7 @@ export default function FlightSearch({
     <Modal open={open} onClose={onClose} title="Search Flights" size="lg">
       <form onSubmit={handleSearch} className="flex flex-wrap gap-2 mb-4">
         <input
-          className="border border-zinc-200 rounded-xl px-3 py-2 text-sm flex-1 min-w-[80px] focus:outline-none focus:ring-2 focus:ring-zinc-300"
+          className="text-zinc-900 border border-zinc-200 rounded-xl px-3 py-2 text-sm flex-1 min-w-[80px] focus:outline-none focus:ring-2 focus:ring-zinc-300"
           placeholder="From (IATA)"
           value={origin}
           onChange={(e) => setOrigin(e.target.value.toUpperCase())}
@@ -113,7 +111,7 @@ export default function FlightSearch({
           required
         />
         <input
-          className="border border-zinc-200 rounded-xl px-3 py-2 text-sm flex-1 min-w-[80px] focus:outline-none focus:ring-2 focus:ring-zinc-300"
+          className="text-zinc-900 border border-zinc-200 rounded-xl px-3 py-2 text-sm flex-1 min-w-[80px] focus:outline-none focus:ring-2 focus:ring-zinc-300"
           placeholder="To (IATA)"
           value={destination}
           onChange={(e) => setDestination(e.target.value.toUpperCase())}
@@ -122,14 +120,14 @@ export default function FlightSearch({
         />
         <input
           type="date"
-          className="border border-zinc-200 rounded-xl px-3 py-2 text-sm flex-1 min-w-[120px] focus:outline-none focus:ring-2 focus:ring-zinc-300"
+          className="text-zinc-900 border border-zinc-200 rounded-xl px-3 py-2 text-sm flex-1 min-w-[120px] focus:outline-none focus:ring-2 focus:ring-zinc-300"
           value={date}
           onChange={(e) => setDate(e.target.value)}
           required
         />
         <input
           type="number"
-          className="border border-zinc-200 rounded-xl px-3 py-2 text-sm w-20 focus:outline-none focus:ring-2 focus:ring-zinc-300"
+          className="text-zinc-900 border border-zinc-200 rounded-xl px-3 py-2 text-sm w-20 focus:outline-none focus:ring-2 focus:ring-zinc-300"
           placeholder="Pax"
           min={1}
           max={9}

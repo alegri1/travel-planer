@@ -1,23 +1,23 @@
-import { NextResponse } from "next/server";
+import type { Route } from "./+types/api.trips";
 import { prisma } from "@/lib/db";
 
-export async function GET() {
+export async function loader() {
   const trips = await prisma.trip.findMany({
     orderBy: { start_date: "asc" },
   });
-  return NextResponse.json(trips);
+  return Response.json(trips);
 }
 
-export async function POST(request: Request) {
+export async function action({ request }: Route.ActionArgs) {
   const body = await request.json();
   const { name, destination, start_date, end_date } = body;
 
   if (!name || !destination || !start_date || !end_date) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    return Response.json({ error: "Missing required fields" }, { status: 400 });
   }
 
   const trip = await prisma.trip.create({
     data: { name, destination, start_date, end_date },
   });
-  return NextResponse.json(trip, { status: 201 });
+  return Response.json(trip, { status: 201 });
 }
