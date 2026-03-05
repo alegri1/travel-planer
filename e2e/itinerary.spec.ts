@@ -9,7 +9,7 @@ interface Trip {
   end_date: string;
 }
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:5173";
 
 test.describe.serial("Itinerary", () => {
   let trip: Trip;

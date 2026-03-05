@@ -9,7 +9,7 @@ interface Trip {
   end_date: string;
 }
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:5173";
 
 const MOCK_FLIGHTS = [
   {
@@ -128,7 +128,7 @@ test.describe.serial("Flight Search", () => {
     await expect(page.getByText("LH400")).toBeVisible();
 
     // Click "+ Add" button on the flight result
-    await page.getByRole("button", { name: "+ Add" }).click();
+    await page.getByRole("button", { name: "+ Add", exact: true }).click();
 
     // Modal should close after adding
     await expect(page.getByRole("heading", { name: "Search Flights" })).not.toBeVisible();

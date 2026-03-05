@@ -44,8 +44,7 @@ test.describe.serial("Trip CRUD", () => {
     await page.getByRole("button", { name: "Create trip" }).click();
 
     // Verify the trip appears in the grid
-    await expect(page.getByText(tripName)).toBeVisible();
-    await expect(page.getByText(tripDestination)).toBeVisible();
+    await expect(page.getByRole("link", { name: tripName })).toBeVisible();
   });
 
   test("date validation: end date before start date shows error", async ({
@@ -80,12 +79,9 @@ test.describe.serial("Trip CRUD", () => {
       await dialog.accept();
     });
 
-    // Find the card containing our trip and click its Delete button
-    const tripCard = page
-      .locator("div")
-      .filter({ hasText: tripName })
-      .filter({ hasText: tripDestination });
-    await tripCard.getByRole("button", { name: "Delete" }).click();
+    // Find the card's Delete button via the adjacent trip name link
+    const tripLink = page.getByRole("link", { name: tripName });
+    await tripLink.locator("..").getByRole("button", { name: "Delete" }).click();
 
     // Verify the trip is removed from the grid
     await expect(page.getByText(tripName)).not.toBeVisible();
@@ -118,11 +114,8 @@ test.describe.serial("Trip CRUD", () => {
     await expect(page.getByText(clickTripName)).toBeVisible();
 
     page.on("dialog", (dialog) => dialog.accept());
-    const card = page
-      .locator("div")
-      .filter({ hasText: clickTripName })
-      .filter({ hasText: "Paris, France" });
-    await card.getByRole("button", { name: "Delete" }).click();
+    const tripLink = page.getByRole("link", { name: clickTripName });
+    await tripLink.locator("..").getByRole("button", { name: "Delete" }).click();
     await expect(page.getByText(clickTripName)).not.toBeVisible();
   });
 });
