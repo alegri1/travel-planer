@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+e2e/.auth/
 
 # react-router
 /.react-router/
@@ -40,6 +45,9 @@ yarn-error.log*
 
 # ide
 .idea
+
+# worktrees
+.worktrees
 
 # sqlite database
 /data/travel.db

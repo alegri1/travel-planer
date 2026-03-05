@@ -8,7 +8,9 @@
     "build": "prisma generate && react-router build",
     "postinstall": "prisma generate",
     "start": "react-router-serve ./build/server/index.js",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.1.1",
@@ -23,6 +25,7 @@
     "isbot": "^5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@react-router/dev": "^7.6.1",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/vite": "^4",
